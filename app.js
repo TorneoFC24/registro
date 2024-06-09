@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 
 // Configuración de Firebase de tu aplicación web
 const firebaseConfig = {
@@ -31,11 +31,12 @@ document.getElementById('registroForm').addEventListener('submit', async functio
     const celular = document.getElementById('celular').value;
 
     try {
-        // Registrar en la colección "personas"
+        // Registrar en la colección "personas" con timestamp
         await addDoc(collection(db, "personas"), {
             nombre: nombre,
             grupo: grupo,
-            celular: celular
+            celular: celular,
+            timestamp: serverTimestamp()
         });
         alert("Registro exitoso");
         document.getElementById('registroForm').reset();
@@ -46,11 +47,12 @@ document.getElementById('registroForm').addEventListener('submit', async functio
     // Verificar si hay que registrar en la lista de espera
     if (personasSnapshot.size >= 32) {
         try {
-            // Registrar en la colección "lista de espera"
+            // Registrar en la colección "lista de espera" con timestamp
             await addDoc(collection(db, "listaDeEspera"), {
                 nombre: nombre,
                 grupo: grupo,
-                celular: celular
+                celular: celular,
+                timestamp: serverTimestamp()
             });
             alert("¡Cupo lleno! Estás registrado en la lista de espera.");
             document.getElementById('registroForm').reset();
